@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo de Instalação Elétrica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Clarity -->
+    <!-- Application Structure Plan: A aplicação foi estruturada como uma jornada de aprendizado vertical para um usuário leigo. Começa com um "Panorama Geral" (diagrama simplificado) para dar uma visão macro. Em seguida, a seção "Comparando Opções" usa uma tabela interativa para destacar as escolhas. A "Lógica por Trás da Segurança" agrupa o glossário e os critérios técnicos em cartões de fácil digestão. A "Lista de Compras" é apresentada de forma clara e funcional. Finalmente, a "Visualização de Consumo" transforma o aviso de segurança sobre uso simultâneo em uma ferramenta interativa com um gráfico Chart.js. Esta estrutura progressiva, do geral ao específico e ao interativo, foi escolhida para maximizar a compreensão e o engajamento do usuário. -->
+    <!-- Visualization & Content Choices: Diagrama (HTML/CSS): Informar -> Representação visual do fluxo de energia -> Interação por leitura -> Justificativa: Clareza imediata sem bibliotecas. Tabela Comparativa (HTML/JS): Comparar -> Tabela com colunas clicáveis -> Destaque visual da coluna selecionada -> Justificativa: Facilita a comparação direta entre os cenários. Cartões de Informação (HTML/CSS): Organizar/Informar -> Divs em grid -> Leitura -> Justificativa: Divide informações técnicas em blocos menores e mais fáceis de assimilar. Gráfico de Barras (Chart.js/Canvas): Relacionamentos/Comparar -> Gráfico de barras horizontal dinâmico -> Toggles para ligar/desligar aparelhos e ver o impacto no consumo total -> Justificativa: Torna o conceito abstrato de "carga simultânea" tangível e visualmente impactante, reforçando a principal advertência de segurança do relatório. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .table-cell-highlight {
+            background-color: #ecfdf5; /* green-50 */
+            border-left: 4px solid #10b981; /* green-500 */
+        }
+         .toggle-bg:after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            transition: 0.3s;
+        }
+        input:checked + .toggle-bg:after {
+            transform: translateX(100%);
+            left: calc(100% - 22px);
+        }
+        input:checked + .toggle-bg {
+            background: #10b981; /* green-500 */
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-cyan-800 mb-2">⚡ Guia da Sua Nova Instalação Elétrica</h1>
+            <p class="text-lg text-stone-600">Um resumo interativo para instalar tudo com segurança, sem gambiarras.</p>
+        </header>
+
+        <main>
+            <!-- Section 1: Panorama Geral -->
+            <section id="panorama" class="mb-16 bg-white p-6 rounded-2xl shadow-sm">
+                <h2 class="text-3xl font-bold text-center mb-6 text-cyan-700">O Panorama Geral</h2>
+                <p class="text-center text-stone-600 max-w-3xl mx-auto mb-8">
+                    Esta seção mostra o caminho que a energia faz, desde a entrada no seu apartamento até chegar nos novos aparelhos. É a visão geral de como os novos 4 circuitos (3 de ar-condicionado e 1 do chuveiro) se conectam ao seu quadro de luz, passando sempre pela proteção principal contra choques.
+                </p>
+                <div class="flex flex-col items-center space-y-4">
+                    <div class="bg-amber-100 text-amber-800 p-3 rounded-lg font-semibold shadow">Alimentação do Prédio (220V)</div>
+                    <div class="text-3xl text-stone-400">⬇️</div>
+                    <div class="bg-red-100 text-red-800 p-4 rounded-lg font-semibold border-2 border-red-300 shadow-md">🛡️ Dispositivo DR Geral (Proteção Antichoque)</div>
+                    <div class="text-3xl text-stone-400">⬇️</div>
+                    <div class="w-full max-w-4xl bg-stone-100 p-4 rounded-xl border border-stone-200">
+                        <h3 class="text-center font-bold mb-4 text-stone-700">Novos Disjuntores Dedicados</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                            <div class="bg-white p-3 rounded-lg shadow-sm">
+                                <span class="font-bold text-blue-600">Disjuntor 32A</span><br><span>🚿 Chuveiro</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-sm">
+                                <span class="font-bold text-blue-600">Disjuntor 20A</span><br><span>❄️ Ar-Condicionado (Sala)</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-sm">
+                                <span class="font-bold text-blue-600">Disjuntor 16A</span><br><span>❄️ Ar-Condicionado (Quarto)</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-sm">
+                                <span class="font-bold text-blue-600">Disjuntor 16A</span><br><span>❄️ Ar-Condicionado (Escritório)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Tabela Comparativa -->
+            <section id="comparativo" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-6 text-cyan-700">Comparando Suas Opções</h2>
+                 <p class="text-center text-stone-600 max-w-3xl mx-auto mb-8">
+                    Aqui, você pode comparar o que foi solicitado originalmente, a solução ideal e segura para a sua necessidade atual, e como o projeto já deixa tudo preparado para um futuro upgrade sem dor de cabeça. Clique nos botões para destacar cada cenário.
+                </p>
+                <div class="flex justify-center space-x-2 mb-4">
+                    <button data-col="1" class="comparison-btn px-4 py-2 rounded-lg bg-stone-200 text-stone-700 transition">Pedido (Referência)</button>
+                    <button data-col="2" class="comparison-btn px-4 py-2 rounded-lg bg-green-500 text-white transition">✅ Ideal AGORA</button>
+                    <button data-col="3" class="comparison-btn px-4 py-2 rounded-lg bg-stone-200 text-stone-700 transition">🚀 Preparado para o FUTURO</button>
+                </div>
+                <div class="overflow-x-auto bg-white p-4 rounded-2xl shadow-sm">
+                    <table id="comparison-table" class="w-full border-collapse text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-4 font-semibold">Cenário</th>
+                                <th class="p-4 font-semibold">O que foi pedido</th>
+                                <th class="p-4 font-semibold">Ideal AGORA</th>
+                                <th class="p-4 font-semibold">Preparado para o FUTURO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">❄️ Ar-Condicionado (Cabos)</td>
+                                <td class="p-4">30 m de cabo <strong>2,5 mm²</strong></td>
+                                <td class="p-4"><strong>35 m de cabo 2,5 mm²</strong> (total para os 3 pontos).</td>
+                                <td class="p-4">O cabo de <strong>2,5 mm²</strong> permanece o mesmo.</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">❄️ Ar-Condicionado (Disjuntores)</td>
+                                <td class="p-4">2 disjuntores de <strong>25 A</strong></td>
+                                <td class="p-4">3 disjuntores bipolares (2P): <br>• 2 de <strong>16 A</strong> <br>• 1 de <strong>16 A ou 20 A</strong></td>
+                                <td class="p-4">Trocar apenas o disjuntor da sala para <strong>20 A</strong>.</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">🚿 Chuveiro (Cabo)</td>
+                                <td class="p-4">15 m de cabo <strong>10 mm²</strong> (exagerado)</td>
+                                <td class="p-4"><strong>15 m de cabo 4 mm²</strong>. Medida correta e segura.</td>
+                                <td class="p-4">Nada muda. O cabo de <strong>4 mm²</strong> continua perfeito.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-medium">🚿 Chuveiro (Disjuntor)</td>
+                                <td class="p-4">1 disjuntor de <strong>32 A</strong></td>
+                                <td class="p-4">1 disjuntor bipolar (2P) de <strong>32 A</strong>.</td>
+                                <td class="p-4">Segue igual, sem necessidade de alteração.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <div id="comparison-summary" class="mt-4 p-4 bg-green-50 rounded-lg text-green-800 text-center transition-all duration-300">
+                    Esta é a solução mais segura e econômica para sua necessidade atual, usando os materiais corretos e seguindo todas as normas de segurança.
+                </div>
+            </section>
+
+             <!-- Section 5: Visualização de Consumo -->
+            <section id="consumo" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-6 text-cyan-700">Visualização de Consumo</h2>
+                <p class="text-center text-stone-600 max-w-3xl mx-auto mb-8">
+                    Seu disjuntor geral suporta até 63 Amperes (A). Use os botões abaixo para simular o que acontece ao ligar vários aparelhos ao mesmo tempo. Isso ajuda a entender visualmente por que é importante evitar picos de consumo para não sobrecarregar a instalação.
+                </p>
+                <div class="bg-white p-6 rounded-2xl shadow-sm">
+                    <div class="flex flex-wrap justify-center gap-4 mb-6">
+                        <label for="showerToggle" class="flex items-center cursor-pointer">
+                            <span class="mr-3 text-stone-700 font-medium">🚿 Chuveiro</span>
+                            <div class="relative">
+                                <input type="checkbox" id="showerToggle" class="sr-only appliance-toggle" data-load="24.5">
+                                <div class="block bg-stone-200 w-12 h-6 rounded-full toggle-bg"></div>
+                            </div>
+                        </label>
+                        <label for="acSalaToggle" class="flex items-center cursor-pointer">
+                            <span class="mr-3 text-stone-700 font-medium">❄️ Ar Sala</span>
+                            <div class="relative">
+                                <input type="checkbox" id="acSalaToggle" class="sr-only appliance-toggle" data-load="10">
+                                <div class="block bg-stone-200 w-12 h-6 rounded-full toggle-bg"></div>
+                            </div>
+                        </label>
+                        <label for="acQuartoToggle" class="flex items-center cursor-pointer">
+                            <span class="mr-3 text-stone-700 font-medium">❄️ Ar Quarto</span>
+                            <div class="relative">
+                                <input type="checkbox" id="acQuartoToggle" class="sr-only appliance-toggle" data-load="10">
+                                <div class="block bg-stone-200 w-12 h-6 rounded-full toggle-bg"></div>
+                            </div>
+                        </label>
+                         <label for="acEscritorioToggle" class="flex items-center cursor-pointer">
+                            <span class="mr-3 text-stone-700 font-medium">❄️ Ar Escritório</span>
+                            <div class="relative">
+                                <input type="checkbox" id="acEscritorioToggle" class="sr-only appliance-toggle" data-load="10">
+                                <div class="block bg-stone-200 w-12 h-6 rounded-full toggle-bg"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="consumptionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Lógica e Glossário -->
+            <section id="logica" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-6 text-cyan-700">A Lógica por Trás da Segurança</h2>
+                <p class="text-center text-stone-600 max-w-3xl mx-auto mb-8">
+                    Entenda de forma simples os motivos das escolhas técnicas e o que significa cada termo importante. Esta seção é um guia rápido para você "traduzir" o jargão elétrico e compreender por que cada componente é crucial para a segurança e eficiência do seu sistema.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm">
+                        <h3 class="font-bold text-lg mb-2 text-cyan-800">Por que cabo 2,5 mm² para os Ares?</h3>
+                        <p class="text-stone-600">Um ar de 9.000 BTU consome de 6-10 Amperes e um de 12.000 BTU de 9-15 Amperes. O cabo 2,5 mm² suporta isso com folga, e os disjuntores de 16A/20A protegem os equipamentos corretamente.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm">
+                        <h3 class="font-bold text-lg mb-2 text-cyan-800">Por que cabo 4 mm² para o Chuveiro?</h3>
+                        <p class="text-stone-600">Seu chuveiro consome quase 25 Amperes. Um cabo mais fino esquentaria perigosamente, e um mais grosso seria desperdício. O cabo 4 mm² com disjuntor de 32A é a combinação perfeita e segura.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm">
+                        <h3 class="font-bold text-lg mb-2 text-cyan-800">Tudo passa pelo DR?</h3>
+                        <p class="text-stone-600">Sim! É uma exigência da norma e a sua maior proteção contra choques. Todos os 4 novos circuitos passam por ele, garantindo segurança máxima para sua família.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                        <h3 class="font-bold text-lg mb-2">Bitola (mm²)</h3>
+                        <p class="text-stone-600">É a "grossura" do fio de cobre. Quanto maior o número, mais energia (corrente) ele aguenta sem esquentar.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                        <h3 class="font-bold text-lg mb-2">Disjuntor 2P (Bipolar)</h3>
+                        <p class="text-stone-600">Um interruptor de segurança "duplo", que desliga os dois fios de energia do 220V ao mesmo tempo em caso de problema.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-2xl border border-stone-200">
+                        <h3 class="font-bold text-lg mb-2">DR (Diferencial Residual)</h3>
+                        <p class="text-stone-600">O "salva-vidas" do quadro. Detecta qualquer fuga de corrente (como um choque) e desliga a energia em uma fração de segundo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Lista de Compras -->
+            <section id="compras" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-6 text-cyan-700">Sua Lista de Compras</h2>
+                 <p class="text-center text-stone-600 max-w-3xl mx-auto mb-8">
+                    Esta é a lista exata do que você precisa comprar para a instalação ideal, já pensando no futuro. Use os nomes de balcão para facilitar na loja de material elétrico. Você pode copiar a lista toda clicando no botão.
+                </p>
+                <div class="bg-white p-6 rounded-2xl shadow-sm max-w-2xl mx-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-cyan-800">Materiais Necessários</h3>
+                        <button id="copy-btn" class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition">
+                            Copiar Lista
+                        </button>
+                    </div>
+                    <div id="shopping-list">
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-lg mb-2 border-b pb-1">🔌 Cabos Elétricos (Fio Cobre 750V)</h4>
+                            <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                <li><strong>Para os 3 Ares-Condicionados:</strong> 35 metros de cabo 2,5 mm² (em 3 cores diferentes).</li>
+                                <li><strong>Para o Chuveiro:</strong> 15 metros de cabo 4 mm² (em 3 cores diferentes).</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-lg mb-2 border-b pb-1">⚙️ Disjuntores (Bipolares - 2P - Curva C)</h4>
+                             <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                <li><strong>2 unidades</strong> de 16 Amperes (A) - para ar do quarto e escritório.</li>
+                                <li><strong>1 unidade</strong> de 20 Amperes (A) - para ar da sala (preparado para o futuro).</li>
+                                <li><strong>1 unidade</strong> de 32 Amperes (A) - para o chuveiro.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2 border-b pb-1">🛠️ Acessórios</h4>
+                             <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                <li>Terminais para cabos 2,5mm² e 4mm².</li>
+                                <li>Fita isolante de boa qualidade.</li>
+                                <li>Etiquetas para identificação dos disjuntores.</li>
+                                <li>Abraçadeiras plásticas (organização).</li>
+                                <li>Pente de barramento bipolar (Opcional, verificar com o instalador).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center text-stone-500 mt-12 pt-6 border-t">
+            <p>&copy; 2025 Guia Interativo. Instalação segura é prioridade.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const comparisonBtns = document.querySelectorAll('.comparison-btn');
+            const comparisonTable = document.getElementById('comparison-table');
+            const summary = document.getElementById('comparison-summary');
+
+            const summaries = {
+                1: "Este era o pedido inicial, que serve como referência. Alguns itens, como o cabo do chuveiro, estavam superdimensionados.",
+                2: "Esta é a solução mais segura e econômica para sua necessidade atual, usando os materiais corretos e seguindo todas as normas de segurança.",
+                3: "Com uma troca mínima (apenas um disjuntor), a instalação já está pronta para um ar-condicionado mais potente na sala, sem precisar mexer nos cabos."
+            };
+            
+            const summaryColors = {
+                 1: { bg: 'bg-stone-100', text: 'text-stone-700' },
+                 2: { bg: 'bg-green-50', text: 'text-green-800' },
+                 3: { bg: 'bg-blue-50', text: 'text-blue-800' },
+            };
+
+            function highlightColumn(colIndex) {
+                const cells = comparisonTable.querySelectorAll('td, th');
+                cells.forEach(cell => {
+                    cell.classList.remove('table-cell-highlight');
+                });
+
+                if (colIndex >= 0) {
+                    const cellsToHighlight = comparisonTable.querySelectorAll(`td:nth-child(${colIndex + 2}), th:nth-child(${colIndex + 2})`);
+                    cellsToHighlight.forEach(cell => {
+                        cell.classList.add('table-cell-highlight');
+                    });
+                }
+            }
+            
+            function updateButtonStyles(activeIndex) {
+                comparisonBtns.forEach(btn => {
+                    const col = parseInt(btn.dataset.col, 10);
+                     if (col === activeIndex) {
+                        btn.classList.remove('bg-stone-200', 'text-stone-700');
+                        if (col === 1) btn.classList.add('bg-stone-400', 'text-white');
+                        if (col === 2) btn.classList.add('bg-green-500', 'text-white');
+                        if (col === 3) btn.classList.add('bg-blue-500', 'text-white');
+                    } else {
+                        btn.classList.add('bg-stone-200', 'text-stone-700');
+                        btn.classList.remove('bg-stone-400', 'bg-green-500', 'bg-blue-500', 'text-white');
+                    }
+                });
+            }
+
+            comparisonBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const col = parseInt(e.currentTarget.dataset.col, 10);
+                    highlightColumn(col - 1);
+                    summary.textContent = summaries[col];
+                    
+                    Object.values(summaryColors).forEach(color => {
+                        summary.classList.remove(color.bg, color.text);
+                    });
+                    summary.classList.add(summaryColors[col].bg, summaryColors[col].text);
+                    
+                    updateButtonStyles(col);
+                });
+            });
+
+            highlightColumn(1);
+
+            const copyBtn = document.getElementById('copy-btn');
+            const shoppingList = document.getElementById('shopping-list');
+            copyBtn.addEventListener('click', () => {
+                let listText = '';
+                shoppingList.querySelectorAll('h4, li').forEach(item => {
+                    listText += item.textContent.trim() + '\n';
+                });
+                
+                navigator.clipboard.writeText(listText).then(() => {
+                    copyBtn.textContent = 'Copiado!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copiar Lista';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Falha ao copiar texto: ', err);
+                });
+            });
+            
+            const applianceToggles = document.querySelectorAll('.appliance-toggle');
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+            const maxLoad = 63;
+
+            const consumptionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Consumo Total'],
+                    datasets: [{
+                        label: 'Consumo em Amperes (A)',
+                        data: [0],
+                        backgroundColor: ['#34d399'],
+                        borderColor: ['#059669'],
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: maxLoad,
+                            title: {
+                                display: true,
+                                text: 'Amperes (A)'
+                            }
+                        },
+                        y: {
+                           display: false
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Consumo: ${context.raw.toFixed(1)} A de ${maxLoad} A`;
+                                }
+                            }
+                        },
+                        annotation: {
+                           annotations: {
+                                limitLine: {
+                                    type: 'line',
+                                    xMin: maxLoad,
+                                    xMax: maxLoad,
+                                    borderColor: 'rgb(239, 68, 68)',
+                                    borderWidth: 2,
+                                    label: {
+                                        content: 'Limite Geral 63A',
+                                        enabled: true,
+                                        position: 'end'
+                                    }
+                                }
+                           }
+                        }
+                    }
+                }
+            });
+
+            function updateChart() {
+                let totalLoad = 0;
+                applianceToggles.forEach(toggle => {
+                    if (toggle.checked) {
+                        totalLoad += parseFloat(toggle.dataset.load);
+                    }
+                });
+
+                consumptionChart.data.datasets[0].data[0] = totalLoad;
+                
+                const percentage = totalLoad / maxLoad;
+                let color = '#34d399';
+                if (percentage > 0.95) {
+                    color = '#ef4444';
+                } else if (percentage > 0.75) {
+                    color = '#f59e0b';
+                }
+                consumptionChart.data.datasets[0].backgroundColor[0] = color;
+                consumptionChart.data.datasets[0].borderColor[0] = color;
+                
+                consumptionChart.update();
+            }
+
+            applianceToggles.forEach(toggle => {
+                toggle.addEventListener('change', updateChart);
+            });
+            updateChart();
+
+        });
+    </script>
+</body>
+</html>
